@@ -1,1 +1,1 @@
-ывВЫф
+Kuanyshev Alikhan devops lab2
