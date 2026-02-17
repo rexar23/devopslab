@@ -64,7 +64,7 @@ pipeline {
         // СТАДИЯ 4: Попробуем Docker команды
         stage('Try Docker Commands') {
             steps {
-                echo '🔧 Пробуем Docker команды...'
+                echo 'Пробуем Docker команды...'
                 bat '''
                     echo Проверяем версию Docker
                     docker --version || echo Docker не доступен
