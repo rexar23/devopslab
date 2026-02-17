@@ -2,80 +2,78 @@ pipeline {
     agent any
 
     stages {
-        // СТАДИЯ 1: Получение кода
+        // STAGE 1: Checkout code
         stage('Checkout Code') {
             steps {
-                echo 'Забираем код из GitHub...'
+                echo 'Fetching code from GitHub...'
                 checkout scm
             }
         }
 
-        // СТАДИЯ 2: Проверка файлов
+        // STAGE 2: Check files
         stage('Check Files') {
             steps {
-                echo 'Проверяем созданные файлы...'
+                echo 'Checking repository files...'
                 bat '''
-                    chcp 65001
-                    echo === ФАЙЛЫ В РЕПОЗИТОРИИ ===
+                    echo === FILES IN REPOSITORY ===
                     dir
                     echo.
-                    echo === ПРОВЕРКА НАШИХ ФАЙЛОВ ===
+                    echo === CHECKING OUR FILES ===
 
                     if exist Dockerfile (
-                        echo Dockerfile найден
-                        echo Содержимое Dockerfile:
+                        echo Dockerfile found
+                        echo Dockerfile contents:
                         more +0 Dockerfile
                     ) else (
-                        echo Dockerfile не найден
+                        echo Dockerfile not found
                     )
 
                     if exist requirements.txt (
-                        echo requirements.txt найден
+                        echo requirements.txt found
                     ) else (
-                        echo requirements.txt не найден
+                        echo requirements.txt not found
                     )
 
                     if exist src\\app.py (
-                        echo Файл src\\app.py найден
+                        echo File src\\app.py found
                     ) else (
-                        echo Файл src\\app.py не найден
+                        echo File src\\app.py not found
                     )
 
                     if exist .dockerignore (
-                        echo .dockerignore найден
+                        echo .dockerignore found
                     ) else (
-                        echo .dockerignore не найден
+                        echo .dockerignore not found
                     )
                 '''
             }
         }
 
-        // СТАДИЯ 3: Теория Docker
+        // STAGE 3: Docker theory
         stage('Docker Theory') {
             steps {
-                echo 'ТЕОРИЯ DOCKER'
-                echo 'Если бы Jenkins не был на Windows, мы бы выполнили:'
+                echo 'DOCKER THEORY'
+                echo 'If Jenkins was not on Windows, we would do:'
                 echo '1. docker build -t my-app .'
                 echo '2. docker run -d -p 5000:5000 my-app'
                 echo '3. curl http://localhost:5000/health'
-                echo 'На Windows команды через bat будут работать, если Docker Desktop запущен.'
+                echo 'On Windows, commands run via bat if Docker Desktop is running.'
             }
         }
 
-        // СТАДИЯ 4: Попробуем Docker команды
+        // STAGE 4: Try Docker commands
         stage('Try Docker Commands') {
             steps {
-                echo 'Пробуем Docker команды...'
+                echo 'Trying Docker commands...'
                 bat '''
-                    chcp 65001
-                    echo Проверяем версию Docker
-                    docker --version || echo Docker не доступен
+                    echo Checking Docker version
+                    docker --version || echo Docker not available
 
-                    echo Пробуем собрать Docker образ
-                    docker build -t flask-lab2 . || echo Не удалось собрать образ
+                    echo Building Docker image
+                    docker build -t flask-lab2 . || echo Failed to build image
 
-                    echo Пробуем запустить контейнер
-                    docker run -d -p 5000:5000 --name flask-lab2-container flask-lab2 || echo Не удалось запустить контейнер
+                    echo Running Docker container
+                    docker run -d -p 5000:5000 --name flask-lab2-container flask-lab2 || echo Failed to run container
                 '''
             }
         }
@@ -83,24 +81,23 @@ pipeline {
 
     post {
         always {
-            echo '=== ИТОГ РАБОТЫ ==='
+            echo '=== JOB RESULT ==='
             bat '''
-                chcp 65001
-                echo Дата: %date% %time%
-                echo Процесс CI/CD понятен?
-                echo 1. Код → GitHub
+                echo Date: %date% %time%
+                echo CI/CD process understood?
+                echo 1. Code → GitHub
                 echo 2. GitHub → Jenkins
-                echo 3. Jenkins проверяет файлы
-                echo 4. Docker теория изучена
+                echo 3. Jenkins checks files
+                echo 4. Docker theory done
             '''
         }
         success {
-            echo 'ОТЛИЧНО! Вы поняли процесс CI/CD!'
-            echo 'Даже если Docker не запускался — вы молодец!'
+            echo 'GREAT! You understood the CI/CD process!'
+            echo 'Even if Docker did not run — well done!'
         }
         failure {
-            echo 'Были ошибки, но это часть обучения!'
-            echo 'Главное — файлы созданы и процесс понят.'
+            echo 'There were errors, but this is part of learning!'
+            echo 'Main thing — files exist and process is clear.'
         }
     }
 }
