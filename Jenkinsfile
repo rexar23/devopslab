@@ -15,6 +15,7 @@ pipeline {
             steps {
                 echo 'Проверяем созданные файлы...'
                 bat '''
+                    chcp 65001
                     echo === ФАЙЛЫ В РЕПОЗИТОРИИ ===
                     dir
                     echo.
@@ -66,6 +67,7 @@ pipeline {
             steps {
                 echo 'Пробуем Docker команды...'
                 bat '''
+                    chcp 65001
                     echo Проверяем версию Docker
                     docker --version || echo Docker не доступен
 
@@ -83,6 +85,7 @@ pipeline {
         always {
             echo '=== ИТОГ РАБОТЫ ==='
             bat '''
+                chcp 65001
                 echo Дата: %date% %time%
                 echo Процесс CI/CD понятен?
                 echo 1. Код → GitHub
